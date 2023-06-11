@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 700px;
+                 height: 700px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 700px;
+                 height: 700px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#FFFF99", "id": "Axon", "label": "Axon", "shape": "circle"}, {"color": "#FFFF99", "id": "Fiber", "label": "Fiber", "shape": "circle"}, {"color": "#FFFF99", "id": "Neuron", "label": "Neuron", "shape": "circle"}, {"color": "#FFFF99", "id": "Synapse", "label": "Synapse", "shape": "circle"}, {"color": "#FFFF99", "id": "Neuroscience", "label": "Neuroscience", "shape": "circle"}, {"color": "#FFFF99", "id": "Brain cell", "label": "Brain cell", "shape": "circle"}, {"color": "#FFFF99", "id": "Human brain", "label": "Human brain", "shape": "circle"}, {"color": "#FFFF99", "id": "Soma (biology)", "label": "Soma (biology)", "shape": "circle"}, {"color": "#FFFF99", "id": "Olfactory bulb", "label": "Olfactory bulb", "shape": "circle"}, {"color": "#FFFF99", "id": "Rat", "label": "Rat", "shape": "circle"}, {"color": "#FFFF99", "id": "Grey matter", "label": "Grey matter", "shape": "circle"}, {"color": "#FFFF99", "id": "White matter", "label": "White matter", "shape": "circle"}, {"color": "#FFFF99", "id": "Excitatory synapse", "label": "Excitatory synapse", "shape": "circle"}, {"color": "#FFFF99", "id": "Action potential", "label": "Action potential", "shape": "circle"}, {"color": "#FFFF99", "id": "Potential", "label": "Potential", "shape": "circle"}, {"color": "#FFFF99", "id": "Cnidaria", "label": "Cnidaria", "shape": "circle"}, {"color": "#FFFF99", "id": "Mouth", "label": "Mouth", "shape": "circle"}, {"color": "#FFFF99", "id": "Anus", "label": "Anus", "shape": "circle"}, {"color": "#FFFF99", "id": "Tardigrade", "label": "Tardigrade", "shape": "circle"}, {"color": "#FFFF99", "id": "Echinoderm", "label": "Echinoderm", "shape": "circle"}, {"color": "#FFFF99", "id": "Bilateria", "label": "Bilateria", "shape": "circle"}, {"color": "#FFFF99", "id": "Tunicate", "label": "Tunicate", "shape": "circle"}, {"color": "#FFFF99", "id": "Octopus", "label": "Octopus", "shape": "circle"}, {"color": "#FFFF99", "id": "Mollusca", "label": "Mollusca", "shape": "circle"}, {"color": "#FFFF99", "id": "Cephalopod", "label": "Cephalopod", "shape": "circle"}, {"color": "#FFFF99", "id": "Squid", "label": "Squid", "shape": "circle"}, {"color": "#FFFF99", "id": "Invertebrate", "label": "Invertebrate", "shape": "circle"}, {"color": "#FFFF99", "id": "Genome", "label": "Genome", "shape": "circle"}, {"color": "#FFFF99", "id": "Genetics", "label": "Genetics", "shape": "circle"}, {"color": "#FFFF99", "id": "Gene", "label": "Gene", "shape": "circle"}, {"color": "#FFFF99", "id": "Nervous system", "label": "Nervous system", "shape": "circle"}, {"color": "#FFFF99", "id": "Cambrian", "label": "Cambrian", "shape": "circle"}, {"color": "#FFFF99", "id": "Cerebrum", "label": "Cerebrum", "shape": "circle"}, {"color": "#FFFF99", "id": "Mammal", "label": "Mammal", "shape": "circle"}, {"color": "#FFFF99", "id": "Brain", "label": "Brain", "shape": "circle"}, {"color": "#FFFF99", "id": "Primate", "label": "Primate", "shape": "circle"}, {"color": "#FFFF99", "id": "Family", "label": "Family", "shape": "circle"}, {"color": "#FFFF99", "id": "Behavior", "label": "Behavior", "shape": "circle"}, {"color": "#FFFF99", "id": "Forebrain", "label": "Forebrain", "shape": "circle"}, {"color": "#FFFF99", "id": "Midbrain", "label": "Midbrain", "shape": "circle"}, {"color": "#FFFF99", "id": "Hindbrain", "label": "Hindbrain", "shape": "circle"}, {"color": "#FFFF99", "id": "Meninges", "label": "Meninges", "shape": "circle"}, {"color": "#FFFF99", "id": "Connective tissue", "label": "Connective tissue", "shape": "circle"}, {"color": "#FFFF99", "id": "Central nervous system", "label": "Central nervous system", "shape": "circle"}, {"color": "#FFFF99", "id": "Diencephalon", "label": "Diencephalon", "shape": "circle"}, {"color": "#FFFF99", "id": "Hypothalamus", "label": "Hypothalamus", "shape": "circle"}, {"color": "#FFFF99", "id": "Shark", "label": "Shark", "shape": "circle"}, {"color": "#FFFF99", "id": "Pons", "label": "Pons", "shape": "circle"}, {"color": "#FFFF99", "id": "Brainstem", "label": "Brainstem", "shape": "circle"}, {"color": "#FFFF99", "id": "Neurochemistry", "label": "Neurochemistry", "shape": "circle"}, {"color": "#FFFF99", "id": "Cerebellum", "label": "Cerebellum", "shape": "circle"}, {"color": "#FFFF99", "id": "Neuroplasticity", "label": "Neuroplasticity", "shape": "circle"}, {"color": "#FFFF99", "id": "Superior colliculus", "label": "Superior colliculus", "shape": "circle"}, {"color": "#FFFF99", "id": "Infrared sensing in snakes", "label": "Infrared sensing in snakes", "shape": "circle"}, {"color": "#FFFF99", "id": "Snake", "label": "Snake", "shape": "circle"}, {"color": "#FFFF99", "id": "Pallium", "label": "Pallium", "shape": "circle"}, {"color": "#FFFF99", "id": "Cerebral cortex", "label": "Cerebral cortex", "shape": "circle"}, {"color": "#FFFF99", "id": "Hippocampus", "label": "Hippocampus", "shape": "circle"}, {"color": "#FFFF99", "id": "Neocortex", "label": "Neocortex", "shape": "circle"}, {"color": "#FFFF99", "id": "Amygdala", "label": "Amygdala", "shape": "circle"}, {"color": "#FFFF99", "id": "Posterior lobe of cerebellum", "label": "Posterior lobe of cerebellum", "shape": "circle"}, {"color": "#FFFF99", "id": "Thalamus", "label": "Thalamus", "shape": "circle"}, {"color": "#FFFF99", "id": "Metencephalon", "label": "Metencephalon", "shape": "circle"}, {"color": "#FFFF99", "id": "Protein", "label": "Protein", "shape": "circle"}, {"color": "#FFFF99", "id": "Neurotransmission", "label": "Neurotransmission", "shape": "circle"}, {"color": "#FFFF99", "id": "Dentate gyrus", "label": "Dentate gyrus", "shape": "circle"}, {"color": "#FFFF99", "id": "Sense of smell", "label": "Sense of smell", "shape": "circle"}, {"color": "#FFFF99", "id": "Anti-gravity", "label": "Anti-gravity", "shape": "circle"}, {"color": "#FFFF99", "id": "Antistatic agent", "label": "Antistatic agent", "shape": "circle"}, {"color": "#FFFF99", "id": "Weight loss", "label": "Weight loss", "shape": "circle"}, {"color": "#FFFF99", "id": "Disease", "label": "Disease", "shape": "circle"}, {"color": "#FFFF99", "id": "Weight gain", "label": "Weight gain", "shape": "circle"}, {"color": "#FFFF99", "id": "Neurotransmitter", "label": "Neurotransmitter", "shape": "circle"}, {"color": "#FFFF99", "id": "Chemical substance", "label": "Chemical substance", "shape": "circle"}, {"color": "#FFFF99", "id": "Cannabinoid", "label": "Cannabinoid", "shape": "circle"}, {"color": "#FFFF99", "id": "Psychoactive drug", "label": "Psychoactive drug", "shape": "circle"}, {"color": "#FFFF99", "id": "Heroin", "label": "Heroin", "shape": "circle"}, {"color": "#FFFF99", "id": "\u0393-Aminobutyric acid", "label": "\u0393-Aminobutyric acid", "shape": "circle"}, {"color": "#FFFF99", "id": "Glutamic acid", "label": "Glutamic acid", "shape": "circle"}, {"color": "#FFFF99", "id": "Serotonin", "label": "Serotonin", "shape": "circle"}, {"color": "#FFFF99", "id": "Norepinephrine", "label": "Norepinephrine", "shape": "circle"}, {"color": "#FFFF99", "id": "Locus coeruleus", "label": "Locus coeruleus", "shape": "circle"}, {"color": "#FFFF99", "id": "Acetylcholine", "label": "Acetylcholine", "shape": "circle"}, {"color": "#FFFF99", "id": "Dopamine", "label": "Dopamine", "shape": "circle"}, {"color": "#FFFF99", "id": "Skull", "label": "Skull", "shape": "circle"}, {"color": "#FFFF99", "id": "Electric field", "label": "Electric field", "shape": "circle"}, {"color": "#FFFF99", "id": "Glia", "label": "Glia", "shape": "circle"}, {"color": "#FFFF99", "id": "Enanthic acid", "label": "Enanthic acid", "shape": "circle"}, {"color": "#FFFF99", "id": "Fatty acid", "label": "Fatty acid", "shape": "circle"}, {"color": "#FFFF99", "id": "Memory", "label": "Memory", "shape": "circle"}, {"color": "#FFFF99", "id": "Signal processing", "label": "Signal processing", "shape": "circle"}, {"color": "#FFFF99", "id": "Photoreceptor cell", "label": "Photoreceptor cell", "shape": "circle"}, {"color": "#FFFF99", "id": "Retina", "label": "Retina", "shape": "circle"}, {"color": "#FFFF99", "id": "Cochlea", "label": "Cochlea", "shape": "circle"}, {"color": "#FFFF99", "id": "Ear", "label": "Ear", "shape": "circle"}, {"color": "#FFFF99", "id": "Spinal cord", "label": "Spinal cord", "shape": "circle"}, {"color": "#FFFF99", "id": "Red nucleus", "label": "Red nucleus", "shape": "circle"}, {"color": "#FFFF99", "id": "Primary motor cortex", "label": "Primary motor cortex", "shape": "circle"}, {"color": "#FFFF99", "id": "Pyramidal tracts", "label": "Pyramidal tracts", "shape": "circle"}, {"color": "#FFFF99", "id": "Basal ganglia", "label": "Basal ganglia", "shape": "circle"}, {"color": "#FFFF99", "id": "Premotor cortex", "label": "Premotor cortex", "shape": "circle"}, {"color": "#FFFF99", "id": "Suprachiasmatic nucleus", "label": "Suprachiasmatic nucleus", "shape": "circle"}, {"color": "#FFFF99", "id": "Coma", "label": "Coma", "shape": "circle"}, {"color": "#FFFF99", "id": "Sleep", "label": "Sleep", "shape": "circle"}, {"color": "#FFFF99", "id": "Pituitary gland", "label": "Pituitary gland", "shape": "circle"}, {"color": "#FFFF99", "id": "Insect", "label": "Insect", "shape": "circle"}, {"color": "#FFFF99", "id": "Organism", "label": "Organism", "shape": "circle"}, {"color": "#FFFF99", "id": "Nicotine", "label": "Nicotine", "shape": "circle"}, {"color": "#FFFF99", "id": "Substance abuse", "label": "Substance abuse", "shape": "circle"}, {"color": "#FFFF99", "id": "Learning", "label": "Learning", "shape": "circle"}, {"color": "#FFFF99", "id": "Working memory", "label": "Working memory", "shape": "circle"}, {"color": "#FFFF99", "id": "Hebbian theory", "label": "Hebbian theory", "shape": "circle"}, {"color": "#FFFF99", "id": "Episodic memory", "label": "Episodic memory", "shape": "circle"}, {"color": "#FFFF99", "id": "Semantic memory", "label": "Semantic memory", "shape": "circle"}, {"color": "#FFFF99", "id": "Mental disorder", "label": "Mental disorder", "shape": "circle"}, {"color": "#FFFF99", "id": "Artificial intelligence", "label": "Artificial intelligence", "shape": "circle"}, {"color": "#FFFF99", "id": "Computer science", "label": "Computer science", "shape": "circle"}, {"color": "#FFFF99", "id": "Functional magnetic resonance imaging", "label": "Functional magnetic resonance imaging", "shape": "circle"}, {"color": "#FFFF99", "id": "Functional imaging", "label": "Functional imaging", "shape": "circle"}, {"color": "#FFFF99", "id": "Stroke", "label": "Stroke", "shape": "circle"}, {"color": "#FFFF99", "id": "Brain damage", "label": "Brain damage", "shape": "circle"}, {"color": "#FFFF99", "id": "Democritus", "label": "Democritus", "shape": "circle"}, {"color": "#FFFF99", "id": "Atomic theory", "label": "Atomic theory", "shape": "circle"}, {"color": "#FFFF99", "id": "Ren\u00e9 Descartes", "label": "Ren\u00e9 Descartes", "shape": "circle"}, {"color": "#FFFF99", "id": "Renaissance", "label": "Renaissance", "shape": "circle"}, {"color": "#FFFF99", "id": "Middle Ages", "label": "Middle Ages", "shape": "circle"}, {"color": "#FFFF99", "id": "Nerve", "label": "Nerve", "shape": "circle"}, {"color": "#FFFF99", "id": "Luigi Galvani", "label": "Luigi Galvani", "shape": "circle"}, {"color": "#FFFF99", "id": "Dendrite", "label": "Dendrite", "shape": "circle"}, {"color": "#FFFF99", "id": "Dendrite (metal)", "label": "Dendrite (metal)", "shape": "circle"}, {"color": "#FFFF99", "id": "1942", "label": "1942", "shape": "circle"}, {"color": "#FFFF99", "id": "Cybernetics", "label": "Cybernetics", "shape": "circle"}, {"color": "#FFFF99", "id": "Computational neuroscience", "label": "Computational neuroscience", "shape": "circle"}, {"color": "#FFFF99", "id": "Distributed computing", "label": "Distributed computing", "shape": "circle"}, {"color": "#FFFF99", "id": "Computation", "label": "Computation", "shape": "circle"}, {"color": "#FFFF99", "id": "Neural network", "label": "Neural network", "shape": "circle"}, {"color": "#FFFF99", "id": "Genomics", "label": "Genomics", "shape": "circle"}, {"color": "#FFFF99", "id": "Genetic engineering", "label": "Genetic engineering", "shape": "circle"}, {"color": "#FFFF99", "id": "DNA", "label": "DNA", "shape": "circle"}, {"color": "#FFFF99", "id": "Medulla oblongata", "label": "Medulla oblongata", "shape": "circle"}, {"color": "#FFFF99", "id": "Ventricular system", "label": "Ventricular system", "shape": "circle"}, {"color": "#FFFF99", "id": "Claustrum", "label": "Claustrum", "shape": "circle"}, {"color": "#FFFF99", "id": "Cerebrospinal fluid", "label": "Cerebrospinal fluid", "shape": "circle"}, {"color": "#FFFF99", "id": "Multiple sclerosis", "label": "Multiple sclerosis", "shape": "circle"}, {"color": "#FFFF99", "id": "Parkinson\u0027s disease", "label": "Parkinson\u0027s disease", "shape": "circle"}, {"color": "#FFFF99", "id": "Functional neuroimaging", "label": "Functional neuroimaging", "shape": "circle"}, {"color": "#FFFF99", "id": "Medical imaging", "label": "Medical imaging", "shape": "circle"}, {"color": "#FFFF99", "id": "Electroencephalography", "label": "Electroencephalography", "shape": "circle"}, {"color": "#FFFF99", "id": "Phrenology", "label": "Phrenology", "shape": "circle"}, {"color": "#FFFF99", "id": "Pseudoscience", "label": "Pseudoscience", "shape": "circle"}, {"color": "#FFFF99", "id": "Glia limitans", "label": "Glia limitans", "shape": "circle"}, {"color": "#FFFF99", "id": "Blood\u2013brain barrier", "label": "Blood\u2013brain barrier", "shape": "circle"}, {"color": "#FFFF99", "id": "Gyrus", "label": "Gyrus", "shape": "circle"}, {"color": "#FFFF99", "id": "Sulci", "label": "Sulci", "shape": "circle"}, {"color": "#FFFF99", "id": "Corpus callosum", "label": "Corpus callosum", "shape": "circle"}, {"color": "#FFFF99", "id": "Commissure", "label": "Commissure", "shape": "circle"}, {"color": "#FFFF99", "id": "Frontal lobe", "label": "Frontal lobe", "shape": "circle"}, {"color": "#FFFF99", "id": "Parietal lobe", "label": "Parietal lobe", "shape": "circle"}, {"color": "#FFFF99", "id": "Temporal lobe", "label": "Temporal lobe", "shape": "circle"}, {"color": "#FFFF99", "id": "Occipital lobe", "label": "Occipital lobe", "shape": "circle"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "Axon", "label": "subclass of", "title": "subclass of", "to": "Fiber"}, {"arrows": "to", "from": "Neuron", "label": "has part", "title": "has part", "to": "Synapse"}, {"arrows": "to", "from": "Neuron", "label": "has part", "title": "has part", "to": "Axon"}, {"arrows": "to", "from": "Synapse", "label": "part of", "title": "part of", "to": "Neuron"}, {"arrows": "to", "from": "Axon", "label": "part of", "title": "part of", "to": "Neuron"}, {"arrows": "to", "from": "Synapse", "label": "connects with", "title": "connects with", "to": "Neuron"}, {"arrows": "to", "from": "Neuroscience", "label": "studies", "title": "studies", "to": "Brain cell"}, {"arrows": "to", "from": "Brain cell", "label": "studied by", "title": "studied by", "to": "Neuroscience"}, {"arrows": "to", "from": "Human brain", "label": "has parts of the class", "title": "has parts of the class", "to": "Brain cell"}, {"arrows": "to", "from": "Neuron", "label": "has part", "title": "has part", "to": "Soma (biology)"}, {"arrows": "to", "from": "Olfactory bulb", "label": "part of", "title": "part of", "to": "Rat"}, {"arrows": "to", "from": "Grey matter", "label": "opposite of", "title": "opposite of", "to": "White matter"}, {"arrows": "to", "from": "White matter", "label": "opposite of", "title": "opposite of", "to": "Grey matter"}, {"arrows": "to", "from": "Grey matter", "label": "followed by", "title": "followed by", "to": "White matter"}, {"arrows": "to", "from": "Neuron", "label": "connects with", "title": "connects with", "to": "Synapse"}, {"arrows": "to", "from": "Excitatory synapse", "label": "has part", "title": "has part", "to": "Axon"}, {"arrows": "to", "from": "Axon", "label": "part of", "title": "part of", "to": "Excitatory synapse"}, {"arrows": "to", "from": "Action potential", "label": "subclass of", "title": "subclass of", "to": "Potential"}, {"arrows": "to", "from": "Axon", "label": "part of", "title": "part of", "to": "Axon"}, {"arrows": "to", "from": "Axon", "label": "has part", "title": "has part", "to": "Axon"}, {"arrows": "to", "from": "Cnidaria", "label": "different from", "title": "different from", "to": "Cnidaria"}, {"arrows": "to", "from": "Cnidaria", "label": "parent taxon", "title": "parent taxon", "to": "Cnidaria"}, {"arrows": "to", "from": "Mouth", "label": "connects with", "title": "connects with", "to": "Anus"}, {"arrows": "to", "from": "Anus", "label": "connects with", "title": "connects with", "to": "Mouth"}, {"arrows": "to", "from": "Tardigrade", "label": "parent taxon", "title": "parent taxon", "to": "Tardigrade"}, {"arrows": "to", "from": "Echinoderm", "label": "parent taxon", "title": "parent taxon", "to": "Bilateria"}, {"arrows": "to", "from": "Tunicate", "label": "parent taxon", "title": "parent taxon", "to": "Bilateria"}, {"arrows": "to", "from": "Octopus", "label": "parent taxon", "title": "parent taxon", "to": "Mollusca"}, {"arrows": "to", "from": "Octopus", "label": "parent taxon", "title": "parent taxon", "to": "Cephalopod"}, {"arrows": "to", "from": "Squid", "label": "parent taxon", "title": "parent taxon", "to": "Mollusca"}, {"arrows": "to", "from": "Octopus", "label": "subclass of", "title": "subclass of", "to": "Invertebrate"}, {"arrows": "to", "from": "Squid", "label": "subclass of", "title": "subclass of", "to": "Invertebrate"}, {"arrows": "to", "from": "Octopus", "label": "parent taxon", "title": "parent taxon", "to": "Invertebrate"}, {"arrows": "to", "from": "Squid", "label": "parent taxon", "title": "parent taxon", "to": "Invertebrate"}, {"arrows": "to", "from": "Genome", "label": "part of", "title": "part of", "to": "Genetics"}, {"arrows": "to", "from": "Genome", "label": "studied by", "title": "studied by", "to": "Genetics"}, {"arrows": "to", "from": "Genetics", "label": "studies", "title": "studies", "to": "Genome"}, {"arrows": "to", "from": "Genetics", "label": "has part", "title": "has part", "to": "Genome"}, {"arrows": "to", "from": "Gene", "label": "part of", "title": "part of", "to": "Genome"}, {"arrows": "to", "from": "Neuron", "label": "part of", "title": "part of", "to": "Nervous system"}, {"arrows": "to", "from": "Synapse", "label": "part of", "title": "part of", "to": "Nervous system"}, {"arrows": "to", "from": "Cambrian", "label": "has part", "title": "has part", "to": "Cambrian"}, {"arrows": "to", "from": "Cerebrum", "label": "part of", "title": "part of", "to": "Mammal"}, {"arrows": "to", "from": "Cerebrum", "label": "part of", "title": "part of", "to": "Brain"}, {"arrows": "to", "from": "Cerebrum", "label": "part of", "title": "part of", "to": "Cerebrum"}, {"arrows": "to", "from": "Primate", "label": "subclass of", "title": "subclass of", "to": "Mammal"}, {"arrows": "to", "from": "Family", "label": "facet of", "title": "facet of", "to": "Mammal"}, {"arrows": "to", "from": "Family", "label": "has part", "title": "has part", "to": "Behavior"}, {"arrows": "to", "from": "Primate", "label": "instance of", "title": "instance of", "to": "Family"}, {"arrows": "to", "from": "Forebrain", "label": "has part", "title": "has part", "to": "Midbrain"}, {"arrows": "to", "from": "Forebrain", "label": "has part", "title": "has part", "to": "Hindbrain"}, {"arrows": "to", "from": "Midbrain", "label": "part of", "title": "part of", "to": "Forebrain"}, {"arrows": "to", "from": "Hindbrain", "label": "part of", "title": "part of", "to": "Forebrain"}, {"arrows": "to", "from": "Meninges", "label": "subclass of", "title": "subclass of", "to": "Connective tissue"}, {"arrows": "to", "from": "Meninges", "label": "part of", "title": "part of", "to": "Central nervous system"}, {"arrows": "to", "from": "Central nervous system", "label": "has part", "title": "has part", "to": "Meninges"}, {"arrows": "to", "from": "Diencephalon", "label": "has part", "title": "has part", "to": "Hypothalamus"}, {"arrows": "to", "from": "Hypothalamus", "label": "part of", "title": "part of", "to": "Diencephalon"}, {"arrows": "to", "from": "Diencephalon", "label": "part of", "title": "part of", "to": "Midbrain"}, {"arrows": "to", "from": "Midbrain", "label": "has part", "title": "has part", "to": "Diencephalon"}, {"arrows": "to", "from": "Diencephalon", "label": "part of", "title": "part of", "to": "Diencephalon"}, {"arrows": "to", "from": "Shark", "label": "has part", "title": "has part", "to": "Forebrain"}, {"arrows": "to", "from": "Pons", "label": "part of", "title": "part of", "to": "Brainstem"}, {"arrows": "to", "from": "Brainstem", "label": "has part", "title": "has part", "to": "Pons"}, {"arrows": "to", "from": "Brainstem", "label": "has part", "title": "has part", "to": "Hypothalamus"}, {"arrows": "to", "from": "Hypothalamus", "label": "part of", "title": "part of", "to": "Brainstem"}, {"arrows": "to", "from": "Hypothalamus", "label": "part of", "title": "part of", "to": "Forebrain"}, {"arrows": "to", "from": "Neurochemistry", "label": "part of", "title": "part of", "to": "Brain"}, {"arrows": "to", "from": "Brain", "label": "has part", "title": "has part", "to": "Hypothalamus"}, {"arrows": "to", "from": "Brain", "label": "has part", "title": "has part", "to": "Cerebellum"}, {"arrows": "to", "from": "Hypothalamus", "label": "part of", "title": "part of", "to": "Brain"}, {"arrows": "to", "from": "Cerebellum", "label": "part of", "title": "part of", "to": "Brain"}, {"arrows": "to", "from": "Neuroplasticity", "label": "subclass of", "title": "subclass of", "to": "Neuroplasticity"}, {"arrows": "to", "from": "Superior colliculus", "label": "part of", "title": "part of", "to": "Superior colliculus"}, {"arrows": "to", "from": "Superior colliculus", "label": "subclass of", "title": "subclass of", "to": "Superior colliculus"}, {"arrows": "to", "from": "Infrared sensing in snakes", "label": "part of", "title": "part of", "to": "Snake"}, {"arrows": "to", "from": "Grey matter", "label": "subclass of", "title": "subclass of", "to": "Grey matter"}, {"arrows": "to", "from": "Grey matter", "label": "has part", "title": "has part", "to": "Grey matter"}, {"arrows": "to", "from": "Pallium", "label": "subclass of", "title": "subclass of", "to": "Grey matter"}, {"arrows": "to", "from": "Grey matter", "label": "part of", "title": "part of", "to": "Grey matter"}, {"arrows": "to", "from": "Grey matter", "label": "part of", "title": "part of", "to": "Cerebral cortex"}, {"arrows": "to", "from": "Olfactory bulb", "label": "part of", "title": "part of", "to": "Pallium"}, {"arrows": "to", "from": "Pallium", "label": "has part", "title": "has part", "to": "Olfactory bulb"}, {"arrows": "to", "from": "Cerebral cortex", "label": "part of", "title": "part of", "to": "Cerebrum"}, {"arrows": "to", "from": "Forebrain", "label": "connects with", "title": "connects with", "to": "Cerebrum"}, {"arrows": "to", "from": "Cerebrum", "label": "connects with", "title": "connects with", "to": "Forebrain"}, {"arrows": "to", "from": "Cerebrum", "label": "has part", "title": "has part", "to": "Cerebral cortex"}, {"arrows": "to", "from": "Pallium", "label": "part of", "title": "part of", "to": "Cerebrum"}, {"arrows": "to", "from": "Hippocampus", "label": "part of", "title": "part of", "to": "Neocortex"}, {"arrows": "to", "from": "Amygdala", "label": "part of", "title": "part of", "to": "Neocortex"}, {"arrows": "to", "from": "Pallium", "label": "part of", "title": "part of", "to": "Pallium"}, {"arrows": "to", "from": "Pallium", "label": "has part", "title": "has part", "to": "Pallium"}, {"arrows": "to", "from": "Posterior lobe of cerebellum", "label": "part of", "title": "part of", "to": "Cerebellum"}, {"arrows": "to", "from": "Cerebral cortex", "label": "has part", "title": "has part", "to": "Cerebellum"}, {"arrows": "to", "from": "Cerebellum", "label": "part of", "title": "part of", "to": "Cerebral cortex"}, {"arrows": "to", "from": "Cerebellum", "label": "has part", "title": "has part", "to": "Posterior lobe of cerebellum"}, {"arrows": "to", "from": "Forebrain", "label": "followed by", "title": "followed by", "to": "Midbrain"}, {"arrows": "to", "from": "Midbrain", "label": "follows", "title": "follows", "to": "Forebrain"}, {"arrows": "to", "from": "Midbrain", "label": "followed by", "title": "followed by", "to": "Hindbrain"}, {"arrows": "to", "from": "Hindbrain", "label": "follows", "title": "follows", "to": "Midbrain"}, {"arrows": "to", "from": "Diencephalon", "label": "has part", "title": "has part", "to": "Thalamus"}, {"arrows": "to", "from": "Thalamus", "label": "part of", "title": "part of", "to": "Diencephalon"}, {"arrows": "to", "from": "Metencephalon", "label": "has part", "title": "has part", "to": "Cerebellum"}, {"arrows": "to", "from": "Metencephalon", "label": "has part", "title": "has part", "to": "Pons"}, {"arrows": "to", "from": "Cerebellum", "label": "part of", "title": "part of", "to": "Metencephalon"}, {"arrows": "to", "from": "Pons", "label": "part of", "title": "part of", "to": "Metencephalon"}, {"arrows": "to", "from": "Gene", "label": "encodes", "title": "encodes", "to": "Protein"}, {"arrows": "to", "from": "Gene", "label": "has effect", "title": "has effect", "to": "Neurotransmission"}, {"arrows": "to", "from": "Axon", "label": "connects with", "title": "connects with", "to": "Synapse"}, {"arrows": "to", "from": "Dentate gyrus", "label": "part of", "title": "part of", "to": "Hippocampus"}, {"arrows": "to", "from": "Hippocampus", "label": "has part", "title": "has part", "to": "Dentate gyrus"}, {"arrows": "to", "from": "Olfactory bulb", "label": "use", "title": "use", "to": "Sense of smell"}, {"arrows": "to", "from": "Anti-gravity", "label": "opposite of", "title": "opposite of", "to": "Antistatic agent"}, {"arrows": "to", "from": "Weight loss", "label": "facet of", "title": "facet of", "to": "Disease"}, {"arrows": "to", "from": "Weight loss", "label": "subclass of", "title": "subclass of", "to": "Weight gain"}, {"arrows": "to", "from": "Neurotransmitter", "label": "subclass of", "title": "subclass of", "to": "Chemical substance"}, {"arrows": "to", "from": "Cannabinoid", "label": "subclass of", "title": "subclass of", "to": "Psychoactive drug"}, {"arrows": "to", "from": "Heroin", "label": "instance of", "title": "instance of", "to": "Psychoactive drug"}, {"arrows": "to", "from": "Heroin", "label": "subject has role", "title": "subject has role", "to": "Psychoactive drug"}, {"arrows": "to", "from": "\u0393-Aminobutyric acid", "label": "instance of", "title": "instance of", "to": "Neurotransmitter"}, {"arrows": "to", "from": "Glutamic acid", "label": "instance of", "title": "instance of", "to": "Neurotransmitter"}, {"arrows": "to", "from": "\u0393-Aminobutyric acid", "label": "subject has role", "title": "subject has role", "to": "Neurotransmitter"}, {"arrows": "to", "from": "Serotonin", "label": "instance of", "title": "instance of", "to": "Neurotransmitter"}, {"arrows": "to", "from": "Norepinephrine", "label": "instance of", "title": "instance of", "to": "Neurotransmitter"}, {"arrows": "to", "from": "Locus coeruleus", "label": "instance of", "title": "instance of", "to": "Neurotransmitter"}, {"arrows": "to", "from": "Acetylcholine", "label": "instance of", "title": "instance of", "to": "Neurotransmitter"}, {"arrows": "to", "from": "Dopamine", "label": "instance of", "title": "instance of", "to": "Neurotransmitter"}, {"arrows": "to", "from": "Cerebral cortex", "label": "part of", "title": "part of", "to": "Skull"}, {"arrows": "to", "from": "Neuron", "label": "has effect", "title": "has effect", "to": "Electric field"}, {"arrows": "to", "from": "Glia", "label": "has part", "title": "has part", "to": "Neuron"}, {"arrows": "to", "from": "Glia", "label": "has part", "title": "has part", "to": "Glia"}, {"arrows": "to", "from": "Enanthic acid", "label": "subclass of", "title": "subclass of", "to": "Fatty acid"}, {"arrows": "to", "from": "Enanthic acid", "label": "instance of", "title": "instance of", "to": "Fatty acid"}, {"arrows": "to", "from": "Memory", "label": "subclass of", "title": "subclass of", "to": "Signal processing"}, {"arrows": "to", "from": "Memory", "label": "studied by", "title": "studied by", "to": "Signal processing"}, {"arrows": "to", "from": "Signal processing", "label": "studies", "title": "studies", "to": "Memory"}, {"arrows": "to", "from": "Photoreceptor cell", "label": "part of", "title": "part of", "to": "Retina"}, {"arrows": "to", "from": "Retina", "label": "has part", "title": "has part", "to": "Photoreceptor cell"}, {"arrows": "to", "from": "Cochlea", "label": "part of", "title": "part of", "to": "Ear"}, {"arrows": "to", "from": "Brain", "label": "connects with", "title": "connects with", "to": "Spinal cord"}, {"arrows": "to", "from": "Thalamus", "label": "part of", "title": "part of", "to": "Brain"}, {"arrows": "to", "from": "Cerebral cortex", "label": "part of", "title": "part of", "to": "Brain"}, {"arrows": "to", "from": "Brain", "label": "has part", "title": "has part", "to": "Thalamus"}, {"arrows": "to", "from": "Brain", "label": "has part", "title": "has part", "to": "Cerebral cortex"}, {"arrows": "to", "from": "Thalamus", "label": "part of", "title": "part of", "to": "Spinal cord"}, {"arrows": "to", "from": "Spinal cord", "label": "has part", "title": "has part", "to": "Thalamus"}, {"arrows": "to", "from": "Red nucleus", "label": "part of", "title": "part of", "to": "Red nucleus"}, {"arrows": "to", "from": "Red nucleus", "label": "part of", "title": "part of", "to": "Primary motor cortex"}, {"arrows": "to", "from": "Pyramidal tracts", "label": "part of", "title": "part of", "to": "Spinal cord"}, {"arrows": "to", "from": "Pyramidal tracts", "label": "connects with", "title": "connects with", "to": "Spinal cord"}, {"arrows": "to", "from": "Basal ganglia", "label": "part of", "title": "part of", "to": "Premotor cortex"}, {"arrows": "to", "from": "Suprachiasmatic nucleus", "label": "part of", "title": "part of", "to": "Hypothalamus"}, {"arrows": "to", "from": "Hypothalamus", "label": "has part", "title": "has part", "to": "Suprachiasmatic nucleus"}, {"arrows": "to", "from": "Hypothalamus", "label": "part of", "title": "part of", "to": "Midbrain"}, {"arrows": "to", "from": "Coma", "label": "subclass of", "title": "subclass of", "to": "Sleep"}, {"arrows": "to", "from": "Norepinephrine", "label": "subject has role", "title": "subject has role", "to": "Neurotransmitter"}, {"arrows": "to", "from": "Forebrain", "label": "has part", "title": "has part", "to": "Hypothalamus"}, {"arrows": "to", "from": "Pituitary gland", "label": "part of", "title": "part of", "to": "Pituitary gland"}, {"arrows": "to", "from": "Pituitary gland", "label": "has part", "title": "has part", "to": "Pituitary gland"}, {"arrows": "to", "from": "Pituitary gland", "label": "part of", "title": "part of", "to": "Hypothalamus"}, {"arrows": "to", "from": "Insect", "label": "subclass of", "title": "subclass of", "to": "Organism"}, {"arrows": "to", "from": "Nicotine", "label": "instance of", "title": "instance of", "to": "Substance abuse"}, {"arrows": "to", "from": "Learning", "label": "different from", "title": "different from", "to": "Memory"}, {"arrows": "to", "from": "Memory", "label": "different from", "title": "different from", "to": "Learning"}, {"arrows": "to", "from": "Working memory", "label": "subclass of", "title": "subclass of", "to": "Memory"}, {"arrows": "to", "from": "Neuron", "label": "part of", "title": "part of", "to": "Hebbian theory"}, {"arrows": "to", "from": "Episodic memory", "label": "opposite of", "title": "opposite of", "to": "Semantic memory"}, {"arrows": "to", "from": "Semantic memory", "label": "opposite of", "title": "opposite of", "to": "Episodic memory"}, {"arrows": "to", "from": "Episodic memory", "label": "different from", "title": "different from", "to": "Semantic memory"}, {"arrows": "to", "from": "Semantic memory", "label": "different from", "title": "different from", "to": "Episodic memory"}, {"arrows": "to", "from": "Mental disorder", "label": "subclass of", "title": "subclass of", "to": "Mental disorder"}, {"arrows": "to", "from": "Artificial intelligence", "label": "part of", "title": "part of", "to": "Computer science"}, {"arrows": "to", "from": "Functional magnetic resonance imaging", "label": "subclass of", "title": "subclass of", "to": "Functional imaging"}, {"arrows": "to", "from": "Skull", "label": "connects with", "title": "connects with", "to": "Meninges"}, {"arrows": "to", "from": "Meninges", "label": "connects with", "title": "connects with", "to": "Skull"}, {"arrows": "to", "from": "Meninges", "label": "part of", "title": "part of", "to": "Meninges"}, {"arrows": "to", "from": "Stroke", "label": "subclass of", "title": "subclass of", "to": "Brain damage"}, {"arrows": "to", "from": "Neuron", "label": "part of", "title": "part of", "to": "Brain"}, {"arrows": "to", "from": "Democritus", "label": "notable work", "title": "notable work", "to": "Atomic theory"}, {"arrows": "to", "from": "Atomic theory", "label": "discoverer or inventor", "title": "discoverer or inventor", "to": "Democritus"}, {"arrows": "to", "from": "Democritus", "label": "field of work", "title": "field of work", "to": "Atomic theory"}, {"arrows": "to", "from": "Ren\u00e9 Descartes", "label": "time period", "title": "time period", "to": "Renaissance"}, {"arrows": "to", "from": "Ren\u00e9 Descartes", "label": "movement", "title": "movement", "to": "Renaissance"}, {"arrows": "to", "from": "Renaissance", "label": "follows", "title": "follows", "to": "Middle Ages"}, {"arrows": "to", "from": "Nerve", "label": "part of", "title": "part of", "to": "Nervous system"}, {"arrows": "to", "from": "Luigi Galvani", "label": "discoverer or inventor", "title": "discoverer or inventor", "to": "Luigi Galvani"}, {"arrows": "to", "from": "Luigi Galvani", "label": "named after", "title": "named after", "to": "Luigi Galvani"}, {"arrows": "to", "from": "Dendrite", "label": "part of", "title": "part of", "to": "Neuron"}, {"arrows": "to", "from": "Neuron", "label": "has part", "title": "has part", "to": "Dendrite (metal)"}, {"arrows": "to", "from": "Dendrite (metal)", "label": "part of", "title": "part of", "to": "Neuron"}, {"arrows": "to", "from": "1942", "label": "point in time", "title": "point in time", "to": "1942"}, {"arrows": "to", "from": "Cybernetics", "label": "part of", "title": "part of", "to": "Computational neuroscience"}, {"arrows": "to", "from": "Computational neuroscience", "label": "has part", "title": "has part", "to": "Cybernetics"}, {"arrows": "to", "from": "Distributed computing", "label": "subclass of", "title": "subclass of", "to": "Computation"}, {"arrows": "to", "from": "Distributed computing", "label": "subclass of", "title": "subclass of", "to": "Distributed computing"}, {"arrows": "to", "from": "Neural network", "label": "subclass of", "title": "subclass of", "to": "Distributed computing"}, {"arrows": "to", "from": "Genetics", "label": "studies", "title": "studies", "to": "Genetics"}, {"arrows": "to", "from": "Genomics", "label": "subclass of", "title": "subclass of", "to": "Genetic engineering"}, {"arrows": "to", "from": "Genomics", "label": "part of", "title": "part of", "to": "Genetic engineering"}, {"arrows": "to", "from": "DNA", "label": "part of", "title": "part of", "to": "DNA"}, {"arrows": "to", "from": "Spinal cord", "label": "part of", "title": "part of", "to": "Central nervous system"}, {"arrows": "to", "from": "Central nervous system", "label": "has part", "title": "has part", "to": "Nervous system"}, {"arrows": "to", "from": "Central nervous system", "label": "has part", "title": "has part", "to": "Spinal cord"}, {"arrows": "to", "from": "Cerebrum", "label": "part", "title": "part", "to": "Human brain"}, {"arrows": "to", "from": "Nervous system", "label": "has part", "title": "has part", "to": "Spinal cord"}, {"arrows": "to", "from": "Nervous system", "label": "has part", "title": "has part", "to": "Central nervous system"}, {"arrows": "to", "from": "White matter", "label": "has part", "title": "has part", "to": "Grey matter"}, {"arrows": "to", "from": "Grey matter", "label": "part of", "title": "part of", "to": "White matter"}, {"arrows": "to", "from": "White matter", "label": "followed by", "title": "followed by", "to": "Grey matter"}, {"arrows": "to", "from": "Grey matter", "label": "follows", "title": "follows", "to": "White matter"}, {"arrows": "to", "from": "Cerebrum", "label": "part of", "title": "part of", "to": "Human brain"}, {"arrows": "to", "from": "Human brain", "label": "has part", "title": "has part", "to": "Cerebrum"}, {"arrows": "to", "from": "Cerebral cortex", "label": "part of", "title": "part of", "to": "Human brain"}, {"arrows": "to", "from": "Pons", "label": "connects with", "title": "connects with", "to": "Medulla oblongata"}, {"arrows": "to", "from": "Medulla oblongata", "label": "connects with", "title": "connects with", "to": "Pons"}, {"arrows": "to", "from": "Amygdala", "label": "part of", "title": "part of", "to": "Ventricular system"}, {"arrows": "to", "from": "Claustrum", "label": "part of", "title": "part of", "to": "Ventricular system"}, {"arrows": "to", "from": "Brain", "label": "connects with", "title": "connects with", "to": "Skull"}, {"arrows": "to", "from": "Skull", "label": "connects with", "title": "connects with", "to": "Brain"}, {"arrows": "to", "from": "Brain", "label": "connects with", "title": "connects with", "to": "Cerebrospinal fluid"}, {"arrows": "to", "from": "Skull", "label": "connects with", "title": "connects with", "to": "Cerebrospinal fluid"}, {"arrows": "to", "from": "Cerebrospinal fluid", "label": "connects with", "title": "connects with", "to": "Brain"}, {"arrows": "to", "from": "Cerebrospinal fluid", "label": "connects with", "title": "connects with", "to": "Skull"}, {"arrows": "to", "from": "Skull", "label": "located in or next to body of water", "title": "located in or next to body of water", "to": "Cerebrospinal fluid"}, {"arrows": "to", "from": "Multiple sclerosis", "label": "subclass of", "title": "subclass of", "to": "Parkinson\u0027s disease"}, {"arrows": "to", "from": "Functional neuroimaging", "label": "subclass of", "title": "subclass of", "to": "Medical imaging"}, {"arrows": "to", "from": "Electroencephalography", "label": "subclass of", "title": "subclass of", "to": "Medical imaging"}, {"arrows": "to", "from": "Phrenology", "label": "instance of", "title": "instance of", "to": "Pseudoscience"}, {"arrows": "to", "from": "Phrenology", "label": "studied by", "title": "studied by", "to": "Phrenology"}, {"arrows": "to", "from": "Phrenology", "label": "studies", "title": "studies", "to": "Phrenology"}, {"arrows": "to", "from": "Neuron", "label": "part of", "title": "part of", "to": "Grey matter"}, {"arrows": "to", "from": "Neuron", "label": "subclass of", "title": "subclass of", "to": "Grey matter"}, {"arrows": "to", "from": "Glia limitans", "label": "part of", "title": "part of", "to": "Blood\u2013brain barrier"}, {"arrows": "to", "from": "Blood\u2013brain barrier", "label": "has part", "title": "has part", "to": "Glia limitans"}, {"arrows": "to", "from": "White matter", "label": "has part", "title": "has part", "to": "White matter"}, {"arrows": "to", "from": "White matter", "label": "subclass of", "title": "subclass of", "to": "White matter"}, {"arrows": "to", "from": "Gyrus", "label": "subclass of", "title": "subclass of", "to": "White matter"}, {"arrows": "to", "from": "Sulci", "label": "subclass of", "title": "subclass of", "to": "White matter"}, {"arrows": "to", "from": "Corpus callosum", "label": "instance of", "title": "instance of", "to": "Commissure"}, {"arrows": "to", "from": "Frontal lobe", "label": "has part", "title": "has part", "to": "Parietal lobe"}, {"arrows": "to", "from": "Frontal lobe", "label": "has part", "title": "has part", "to": "Temporal lobe"}, {"arrows": "to", "from": "Frontal lobe", "label": "has part", "title": "has part", "to": "Occipital lobe"}, {"arrows": "to", "from": "Parietal lobe", "label": "part of", "title": "part of", "to": "Frontal lobe"}, {"arrows": "to", "from": "Temporal lobe", "label": "part of", "title": "part of", "to": "Frontal lobe"}, {"arrows": "to", "from": "Occipital lobe", "label": "part of", "title": "part of", "to": "Frontal lobe"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.2,
+            "damping": 0.09,
+            "nodeDistance": 200,
+            "springConstant": 0.05,
+            "springLength": 200
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

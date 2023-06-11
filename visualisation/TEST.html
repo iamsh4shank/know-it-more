@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 700px;
+                 height: 700px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 700px;
+                 height: 700px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#FFFF99", "id": "1769", "label": "1769", "shape": "circle"}, {"color": "#FFFF99", "id": "1796", "label": "1796", "shape": "circle"}, {"color": "#FFFF99", "id": "France", "label": "France", "shape": "circle"}, {"color": "#FFFF99", "id": "Corsica", "label": "Corsica", "shape": "circle"}, {"color": "#FFFF99", "id": "Napoleonic Wars", "label": "Napoleonic Wars", "shape": "circle"}, {"color": "#FFFF99", "id": "French Revolution", "label": "French Revolution", "shape": "circle"}, {"color": "#FFFF99", "id": "Holy Roman Empire", "label": "Holy Roman Empire", "shape": "circle"}, {"color": "#FFFF99", "id": "1806", "label": "1806", "shape": "circle"}, {"color": "#FFFF99", "id": "Iberian Peninsula", "label": "Iberian Peninsula", "shape": "circle"}, {"color": "#FFFF99", "id": "Paris", "label": "Paris", "shape": "circle"}, {"color": "#FFFF99", "id": "Battle of Leipzig", "label": "Battle of Leipzig", "shape": "circle"}, {"color": "#FFFF99", "id": "Battle of Waterloo", "label": "Battle of Waterloo", "shape": "circle"}, {"color": "#FFFF99", "id": "Autun", "label": "Autun", "shape": "circle"}, {"color": "#FFFF99", "id": "Metropolitan France", "label": "Metropolitan France", "shape": "circle"}, {"color": "#FFFF99", "id": "1790", "label": "1790", "shape": "circle"}, {"color": "#FFFF99", "id": "History", "label": "History", "shape": "circle"}, {"color": "#FFFF99", "id": "Geography", "label": "Geography", "shape": "circle"}, {"color": "#FFFF99", "id": "\u00c9cole militaire", "label": "\u00c9cole militaire", "shape": "circle"}, {"color": "#FFFF99", "id": "Napoleon", "label": "Napoleon", "shape": "circle"}, {"color": "#FFFF99", "id": "Colonel", "label": "Colonel", "shape": "circle"}, {"color": "#FFFF99", "id": "Brigadier general", "label": "Brigadier general", "shape": "circle"}, {"color": "#FFFF99", "id": "French Republican calendar", "label": "French Republican calendar", "shape": "circle"}, {"color": "#FFFF99", "id": "Leoben", "label": "Leoben", "shape": "circle"}, {"color": "#FFFF99", "id": "Italy", "label": "Italy", "shape": "circle"}, {"color": "#FFFF99", "id": "Vienna", "label": "Vienna", "shape": "circle"}, {"color": "#FFFF99", "id": "Low Countries", "label": "Low Countries", "shape": "circle"}, {"color": "#FFFF99", "id": "Royalist", "label": "Royalist", "shape": "circle"}, {"color": "#FFFF99", "id": "Mysore", "label": "Mysore", "shape": "circle"}, {"color": "#FFFF99", "id": "Battle of the Pyramids", "label": "Battle of the Pyramids", "shape": "circle"}, {"color": "#FFFF99", "id": "Malta", "label": "Malta", "shape": "circle"}, {"color": "#FFFF99", "id": "Bubonic plague", "label": "Bubonic plague", "shape": "circle"}, {"color": "#FFFF99", "id": "Disease", "label": "Disease", "shape": "circle"}, {"color": "#FFFF99", "id": "Abuk (mythology)", "label": "Abuk (mythology)", "shape": "circle"}, {"color": "#FFFF99", "id": "Lucien", "label": "Lucien", "shape": "circle"}, {"color": "#FFFF99", "id": "Swiss Alps", "label": "Swiss Alps", "shape": "circle"}, {"color": "#FFFF99", "id": "Battle of Marengo", "label": "Battle of Marengo", "shape": "circle"}, {"color": "#FFFF99", "id": "Alfred von Schlieffen", "label": "Alfred von Schlieffen", "shape": "circle"}, {"color": "#FFFF99", "id": "Field marshal", "label": "Field marshal", "shape": "circle"}, {"color": "#FFFF99", "id": "Joseph", "label": "Joseph", "shape": "circle"}, {"color": "#FFFF99", "id": "French Consulate", "label": "French Consulate", "shape": "circle"}, {"color": "#FFFF99", "id": "United States", "label": "United States", "shape": "circle"}, {"color": "#FFFF99", "id": "Europe", "label": "Europe", "shape": "circle"}, {"color": "#FFFF99", "id": "Martinique", "label": "Martinique", "shape": "circle"}, {"color": "#FFFF99", "id": "Haiti", "label": "Haiti", "shape": "circle"}, {"color": "#FFFF99", "id": "Republic", "label": "Republic", "shape": "circle"}, {"color": "#FFFF99", "id": "1804", "label": "1804", "shape": "circle"}, {"color": "#FFFF99", "id": "Consulate", "label": "Consulate", "shape": "circle"}, {"color": "#FFFF99", "id": "Baden", "label": "Baden", "shape": "circle"}, {"color": "#FFFF99", "id": "Constitution", "label": "Constitution", "shape": "circle"}, {"color": "#FFFF99", "id": "Roman Empire", "label": "Roman Empire", "shape": "circle"}, {"color": "#FFFF99", "id": "Charlemagne", "label": "Charlemagne", "shape": "circle"}, {"color": "#FFFF99", "id": "Battle of Ulm", "label": "Battle of Ulm", "shape": "circle"}, {"color": "#FFFF99", "id": "Ulm campaign", "label": "Ulm campaign", "shape": "circle"}, {"color": "#FFFF99", "id": "Boulogne-sur-Mer", "label": "Boulogne-sur-Mer", "shape": "circle"}, {"color": "#FFFF99", "id": "Cuirassier", "label": "Cuirassier", "shape": "circle"}, {"color": "#FFFF99", "id": "Cavalry", "label": "Cavalry", "shape": "circle"}, {"color": "#FFFF99", "id": "Light cavalry", "label": "Light cavalry", "shape": "circle"}, {"color": "#FFFF99", "id": "Ulm", "label": "Ulm", "shape": "circle"}, {"color": "#FFFF99", "id": "Swabia", "label": "Swabia", "shape": "circle"}, {"color": "#FFFF99", "id": "Germany", "label": "Germany", "shape": "circle"}, {"color": "#FFFF99", "id": "Russia", "label": "Russia", "shape": "circle"}, {"color": "#FFFF99", "id": "Battle of Austerlitz", "label": "Battle of Austerlitz", "shape": "circle"}, {"color": "#FFFF99", "id": "1805", "label": "1805", "shape": "circle"}, {"color": "#FFFF99", "id": "Moravia", "label": "Moravia", "shape": "circle"}, {"color": "#FFFF99", "id": "Bavaria", "label": "Bavaria", "shape": "circle"}, {"color": "#FFFF99", "id": "Confederation of the Rhine", "label": "Confederation of the Rhine", "shape": "circle"}, {"color": "#FFFF99", "id": "Invasion", "label": "Invasion", "shape": "circle"}, {"color": "#FFFF99", "id": "Prussia", "label": "Prussia", "shape": "circle"}, {"color": "#FFFF99", "id": "Alexander I of Russia", "label": "Alexander I of Russia", "shape": "circle"}, {"color": "#FFFF99", "id": "Neman", "label": "Neman", "shape": "circle"}, {"color": "#FFFF99", "id": "Poland", "label": "Poland", "shape": "circle"}, {"color": "#FFFF99", "id": "Battle of Friedland", "label": "Battle of Friedland", "shape": "circle"}, {"color": "#FFFF99", "id": "Sovetsk, Kaliningrad Oblast", "label": "Sovetsk, Kaliningrad Oblast", "shape": "circle"}, {"color": "#FFFF99", "id": "Peninsular War", "label": "Peninsular War", "shape": "circle"}, {"color": "#FFFF99", "id": "1808", "label": "1808", "shape": "circle"}, {"color": "#FFFF99", "id": "Madrid", "label": "Madrid", "shape": "circle"}, {"color": "#FFFF99", "id": "Monarchy of Spain", "label": "Monarchy of Spain", "shape": "circle"}, {"color": "#FFFF99", "id": "Ebro", "label": "Ebro", "shape": "circle"}, {"color": "#FFFF99", "id": "Somosierra", "label": "Somosierra", "shape": "circle"}, {"color": "#FFFF99", "id": "1809", "label": "1809", "shape": "circle"}, {"color": "#FFFF99", "id": "Donauw\u00f6rth", "label": "Donauw\u00f6rth", "shape": "circle"}, {"color": "#FFFF99", "id": "Battle of Wagram", "label": "Battle of Wagram", "shape": "circle"}, {"color": "#FFFF99", "id": "Charles", "label": "Charles", "shape": "circle"}, {"color": "#FFFF99", "id": "Walcheren Campaign", "label": "Walcheren Campaign", "shape": "circle"}, {"color": "#FFFF99", "id": "1812", "label": "1812", "shape": "circle"}, {"color": "#FFFF99", "id": "Walcheren", "label": "Walcheren", "shape": "circle"}, {"color": "#FFFF99", "id": "Congress of Erfurt", "label": "Congress of Erfurt", "shape": "circle"}, {"color": "#FFFF99", "id": "Alexander", "label": "Alexander", "shape": "circle"}, {"color": "#FFFF99", "id": "Smolensk", "label": "Smolensk", "shape": "circle"}, {"color": "#FFFF99", "id": "August", "label": "August", "shape": "circle"}, {"color": "#FFFF99", "id": "Battle of Borodino", "label": "Battle of Borodino", "shape": "circle"}, {"color": "#FFFF99", "id": "Moscow", "label": "Moscow", "shape": "circle"}, {"color": "#FFFF99", "id": "Malet coup of 1812", "label": "Malet coup of 1812", "shape": "circle"}, {"color": "#FFFF99", "id": "Battle of Dresden", "label": "Battle of Dresden", "shape": "circle"}, {"color": "#FFFF99", "id": "Rhineland", "label": "Rhineland", "shape": "circle"}, {"color": "#FFFF99", "id": "Rhine", "label": "Rhine", "shape": "circle"}, {"color": "#FFFF99", "id": "Austria", "label": "Austria", "shape": "circle"}, {"color": "#FFFF99", "id": "Charles Maurice de Talleyrand-P\u00e9rigord", "label": "Charles Maurice de Talleyrand-P\u00e9rigord", "shape": "circle"}, {"color": "#FFFF99", "id": "Elba", "label": "Elba", "shape": "circle"}, {"color": "#FFFF99", "id": "Mediterranean Sea", "label": "Mediterranean Sea", "shape": "circle"}, {"color": "#FFFF99", "id": "Atlantic Ocean", "label": "Atlantic Ocean", "shape": "circle"}, {"color": "#FFFF99", "id": "Grenoble", "label": "Grenoble", "shape": "circle"}, {"color": "#FFFF99", "id": "Congress of Vienna", "label": "Congress of Vienna", "shape": "circle"}, {"color": "#FFFF99", "id": "Great Britain", "label": "Great Britain", "shape": "circle"}, {"color": "#FFFF99", "id": "Seine", "label": "Seine", "shape": "circle"}, {"color": "#FFFF99", "id": "England", "label": "England", "shape": "circle"}, {"color": "#FFFF99", "id": "Ascension Island", "label": "Ascension Island", "shape": "circle"}, {"color": "#FFFF99", "id": "HMS Northumberland", "label": "HMS Northumberland", "shape": "circle"}, {"color": "#FFFF99", "id": "Arsenic poisoning", "label": "Arsenic poisoning", "shape": "circle"}, {"color": "#FFFF99", "id": "Arsenic", "label": "Arsenic", "shape": "circle"}, {"color": "#FFFF99", "id": "Scheele\u0027s Green", "label": "Scheele\u0027s Green", "shape": "circle"}, {"color": "#FFFF99", "id": "Julius Caesar", "label": "Julius Caesar", "shape": "circle"}, {"color": "#FFFF99", "id": "Pan-European identity", "label": "Pan-European identity", "shape": "circle"}, {"color": "#FFFF99", "id": "Ancien R\u00e9gime", "label": "Ancien R\u00e9gime", "shape": "circle"}, {"color": "#FFFF99", "id": "Gastrointestinal tract", "label": "Gastrointestinal tract", "shape": "circle"}, {"color": "#FFFF99", "id": "Heart", "label": "Heart", "shape": "circle"}, {"color": "#FFFF99", "id": "Death mask", "label": "Death mask", "shape": "circle"}, {"color": "#FFFF99", "id": "Orgeat syrup", "label": "Orgeat syrup", "shape": "circle"}, {"color": "#FFFF99", "id": "Cyanide", "label": "Cyanide", "shape": "circle"}, {"color": "#FFFF99", "id": "Almond", "label": "Almond", "shape": "circle"}, {"color": "#FFFF99", "id": "Potassium tartrate", "label": "Potassium tartrate", "shape": "circle"}, {"color": "#FFFF99", "id": "Syrup", "label": "Syrup", "shape": "circle"}, {"color": "#FFFF99", "id": "Peptic ulcer disease", "label": "Peptic ulcer disease", "shape": "circle"}, {"color": "#FFFF99", "id": "Stomach", "label": "Stomach", "shape": "circle"}, {"color": "#FFFF99", "id": "Diocese", "label": "Diocese", "shape": "circle"}, {"color": "#FFFF99", "id": "Ecclesiastical province", "label": "Ecclesiastical province", "shape": "circle"}, {"color": "#FFFF99", "id": "Quum memoranda", "label": "Quum memoranda", "shape": "circle"}, {"color": "#FFFF99", "id": "Bull", "label": "Bull", "shape": "circle"}, {"color": "#FFFF99", "id": "Concordat of 1801", "label": "Concordat of 1801", "shape": "circle"}, {"color": "#FFFF99", "id": "1801", "label": "1801", "shape": "circle"}, {"color": "#FFFF99", "id": "Pope", "label": "Pope", "shape": "circle"}, {"color": "#FFFF99", "id": "Catholic Church", "label": "Catholic Church", "shape": "circle"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "1769", "label": "point in time", "title": "point in time", "to": "1769"}, {"arrows": "to", "from": "1796", "label": "point in time", "title": "point in time", "to": "1796"}, {"arrows": "to", "from": "France", "label": "contains administrative territorial entity", "title": "contains administrative territorial entity", "to": "Corsica"}, {"arrows": "to", "from": "Corsica", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "France"}, {"arrows": "to", "from": "Napoleonic Wars", "label": "location", "title": "location", "to": "France"}, {"arrows": "to", "from": "French Revolution", "label": "location", "title": "location", "to": "Corsica"}, {"arrows": "to", "from": "Holy Roman Empire", "label": "dissolved, abolished or demolished date", "title": "dissolved, abolished or demolished date", "to": "1806"}, {"arrows": "to", "from": "Iberian Peninsula", "label": "located on terrain feature", "title": "located on terrain feature", "to": "Iberian Peninsula"}, {"arrows": "to", "from": "Paris", "label": "twinned administrative body", "title": "twinned administrative body", "to": "Paris"}, {"arrows": "to", "from": "Battle of Leipzig", "label": "followed by", "title": "followed by", "to": "Battle of Waterloo"}, {"arrows": "to", "from": "Battle of Waterloo", "label": "follows", "title": "follows", "to": "Battle of Leipzig"}, {"arrows": "to", "from": "Autun", "label": "country", "title": "country", "to": "Metropolitan France"}, {"arrows": "to", "from": "1790", "label": "point in time", "title": "point in time", "to": "1790"}, {"arrows": "to", "from": "History", "label": "has part", "title": "has part", "to": "Geography"}, {"arrows": "to", "from": "Geography", "label": "part of", "title": "part of", "to": "History"}, {"arrows": "to", "from": "\u00c9cole militaire", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Paris"}, {"arrows": "to", "from": "\u00c9cole militaire", "label": "headquarters location", "title": "headquarters location", "to": "Paris"}, {"arrows": "to", "from": "Napoleon", "label": "participant in", "title": "participant in", "to": "French Revolution"}, {"arrows": "to", "from": "French Revolution", "label": "participant", "title": "participant", "to": "Napoleon"}, {"arrows": "to", "from": "Colonel", "label": "followed by", "title": "followed by", "to": "Brigadier general"}, {"arrows": "to", "from": "Brigadier general", "label": "follows", "title": "follows", "to": "Colonel"}, {"arrows": "to", "from": "French Republican calendar", "label": "main subject", "title": "main subject", "to": "French Revolution"}, {"arrows": "to", "from": "French Republican calendar", "label": "part of", "title": "part of", "to": "French Revolution"}, {"arrows": "to", "from": "Leoben", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Leoben"}, {"arrows": "to", "from": "Leoben", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Italy"}, {"arrows": "to", "from": "Italy", "label": "contains administrative territorial entity", "title": "contains administrative territorial entity", "to": "Leoben"}, {"arrows": "to", "from": "Leoben", "label": "shares border with", "title": "shares border with", "to": "Vienna"}, {"arrows": "to", "from": "Vienna", "label": "shares border with", "title": "shares border with", "to": "Leoben"}, {"arrows": "to", "from": "Leoben", "label": "country", "title": "country", "to": "Italy"}, {"arrows": "to", "from": "Italy", "label": "part of", "title": "part of", "to": "Low Countries"}, {"arrows": "to", "from": "Royalist", "label": "country", "title": "country", "to": "Italy"}, {"arrows": "to", "from": "Royalist", "label": "operating area", "title": "operating area", "to": "Italy"}, {"arrows": "to", "from": "Mysore", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Mysore"}, {"arrows": "to", "from": "Mysore", "label": "capital of", "title": "capital of", "to": "Mysore"}, {"arrows": "to", "from": "Mysore", "label": "capital", "title": "capital", "to": "Mysore"}, {"arrows": "to", "from": "Battle of the Pyramids", "label": "location", "title": "location", "to": "Malta"}, {"arrows": "to", "from": "Bubonic plague", "label": "instance of", "title": "instance of", "to": "Disease"}, {"arrows": "to", "from": "Abuk (mythology)", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Abuk (mythology)"}, {"arrows": "to", "from": "Napoleon", "label": "sibling", "title": "sibling", "to": "Lucien"}, {"arrows": "to", "from": "Lucien", "label": "sibling", "title": "sibling", "to": "Napoleon"}, {"arrows": "to", "from": "Lucien", "label": "sibling", "title": "sibling", "to": "Lucien"}, {"arrows": "to", "from": "Swiss Alps", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Italy"}, {"arrows": "to", "from": "Battle of Marengo", "label": "part of", "title": "part of", "to": "Battle of Marengo"}, {"arrows": "to", "from": "Alfred von Schlieffen", "label": "military rank", "title": "military rank", "to": "Field marshal"}, {"arrows": "to", "from": "Joseph", "label": "sibling", "title": "sibling", "to": "Joseph"}, {"arrows": "to", "from": "Napoleon", "label": "position held", "title": "position held", "to": "French Consulate"}, {"arrows": "to", "from": "United States", "label": "different from", "title": "different from", "to": "Europe"}, {"arrows": "to", "from": "Europe", "label": "different from", "title": "different from", "to": "United States"}, {"arrows": "to", "from": "Martinique", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Martinique"}, {"arrows": "to", "from": "Haiti", "label": "instance of", "title": "instance of", "to": "Republic"}, {"arrows": "to", "from": "Haiti", "label": "inception", "title": "inception", "to": "1804"}, {"arrows": "to", "from": "Consulate", "label": "part of", "title": "part of", "to": "Napoleonic Wars"}, {"arrows": "to", "from": "Consulate", "label": "participant", "title": "participant", "to": "Napoleon"}, {"arrows": "to", "from": "Baden", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Baden"}, {"arrows": "to", "from": "Europe", "label": "contains administrative territorial entity", "title": "contains administrative territorial entity", "to": "Baden"}, {"arrows": "to", "from": "Baden", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Europe"}, {"arrows": "to", "from": "Constitution", "label": "instance of", "title": "instance of", "to": "Constitution"}, {"arrows": "to", "from": "Roman Empire", "label": "head of state", "title": "head of state", "to": "Napoleon"}, {"arrows": "to", "from": "Roman Empire", "label": "head of state", "title": "head of state", "to": "Charlemagne"}, {"arrows": "to", "from": "Battle of Ulm", "label": "part of", "title": "part of", "to": "Ulm campaign"}, {"arrows": "to", "from": "Ulm campaign", "label": "has part", "title": "has part", "to": "Battle of Ulm"}, {"arrows": "to", "from": "Boulogne-sur-Mer", "label": "country", "title": "country", "to": "France"}, {"arrows": "to", "from": "Cuirassier", "label": "subclass of", "title": "subclass of", "to": "Cavalry"}, {"arrows": "to", "from": "Light cavalry", "label": "subclass of", "title": "subclass of", "to": "Cavalry"}, {"arrows": "to", "from": "Ulm", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Swabia"}, {"arrows": "to", "from": "Germany", "label": "shares border with", "title": "shares border with", "to": "Russia"}, {"arrows": "to", "from": "Russia", "label": "shares border with", "title": "shares border with", "to": "Germany"}, {"arrows": "to", "from": "Swabia", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Swabia"}, {"arrows": "to", "from": "Battle of Austerlitz", "label": "point in time", "title": "point in time", "to": "1805"}, {"arrows": "to", "from": "Battle of Austerlitz", "label": "part of", "title": "part of", "to": "Napoleonic Wars"}, {"arrows": "to", "from": "Ulm campaign", "label": "part of", "title": "part of", "to": "Napoleonic Wars"}, {"arrows": "to", "from": "Battle of Austerlitz", "label": "location", "title": "location", "to": "Moravia"}, {"arrows": "to", "from": "Moravia", "label": "capital", "title": "capital", "to": "Vienna"}, {"arrows": "to", "from": "Battle of Austerlitz", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Moravia"}, {"arrows": "to", "from": "Bavaria", "label": "shares border with", "title": "shares border with", "to": "Italy"}, {"arrows": "to", "from": "Germany", "label": "shares border with", "title": "shares border with", "to": "Bavaria"}, {"arrows": "to", "from": "Italy", "label": "country", "title": "country", "to": "France"}, {"arrows": "to", "from": "Bavaria", "label": "country", "title": "country", "to": "France"}, {"arrows": "to", "from": "Germany", "label": "shares border with", "title": "shares border with", "to": "France"}, {"arrows": "to", "from": "Confederation of the Rhine", "label": "inception", "title": "inception", "to": "1806"}, {"arrows": "to", "from": "Invasion", "label": "participant", "title": "participant", "to": "Prussia"}, {"arrows": "to", "from": "Alexander I of Russia", "label": "father", "title": "father", "to": "Alexander I of Russia"}, {"arrows": "to", "from": "Neman", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Poland"}, {"arrows": "to", "from": "Neman", "label": "origin of the watercourse", "title": "origin of the watercourse", "to": "Neman"}, {"arrows": "to", "from": "Battle of Friedland", "label": "participant", "title": "participant", "to": "Napoleon"}, {"arrows": "to", "from": "Sovetsk, Kaliningrad Oblast", "label": "located in or next to body of water", "title": "located in or next to body of water", "to": "Neman"}, {"arrows": "to", "from": "Peninsular War", "label": "start time", "title": "start time", "to": "1808"}, {"arrows": "to", "from": "Madrid", "label": "capital of", "title": "capital of", "to": "Monarchy of Spain"}, {"arrows": "to", "from": "Monarchy of Spain", "label": "capital", "title": "capital", "to": "Madrid"}, {"arrows": "to", "from": "Madrid", "label": "twinned administrative body", "title": "twinned administrative body", "to": "Madrid"}, {"arrows": "to", "from": "Ebro", "label": "tributary", "title": "tributary", "to": "Ebro"}, {"arrows": "to", "from": "Ebro", "label": "mouth of the watercourse", "title": "mouth of the watercourse", "to": "Ebro"}, {"arrows": "to", "from": "Somosierra", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Madrid"}, {"arrows": "to", "from": "Madrid", "label": "located in or next to body of water", "title": "located in or next to body of water", "to": "Ebro"}, {"arrows": "to", "from": "Peninsular War", "label": "location", "title": "location", "to": "Iberian Peninsula"}, {"arrows": "to", "from": "Iberian Peninsula", "label": "significant event", "title": "significant event", "to": "Peninsular War"}, {"arrows": "to", "from": "Napoleon", "label": "sibling", "title": "sibling", "to": "Joseph"}, {"arrows": "to", "from": "Joseph", "label": "sibling", "title": "sibling", "to": "Napoleon"}, {"arrows": "to", "from": "Invasion", "label": "point in time", "title": "point in time", "to": "1809"}, {"arrows": "to", "from": "Paris", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Paris"}, {"arrows": "to", "from": "Donauw\u00f6rth", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Paris"}, {"arrows": "to", "from": "Battle of Wagram", "label": "part of", "title": "part of", "to": "Battle of Wagram"}, {"arrows": "to", "from": "Battle of Wagram", "label": "participant", "title": "participant", "to": "Charles"}, {"arrows": "to", "from": "Battle of Wagram", "label": "has part", "title": "has part", "to": "Battle of Wagram"}, {"arrows": "to", "from": "Walcheren Campaign", "label": "point in time", "title": "point in time", "to": "1812"}, {"arrows": "to", "from": "Walcheren Campaign", "label": "start time", "title": "start time", "to": "1812"}, {"arrows": "to", "from": "Walcheren Campaign", "label": "inception", "title": "inception", "to": "1812"}, {"arrows": "to", "from": "Walcheren Campaign", "label": "location", "title": "location", "to": "Walcheren"}, {"arrows": "to", "from": "Walcheren", "label": "significant event", "title": "significant event", "to": "Walcheren Campaign"}, {"arrows": "to", "from": "Congress of Erfurt", "label": "point in time", "title": "point in time", "to": "1808"}, {"arrows": "to", "from": "Congress of Erfurt", "label": "participant", "title": "participant", "to": "Alexander"}, {"arrows": "to", "from": "Congress of Erfurt", "label": "instance of", "title": "instance of", "to": "Congress of Erfurt"}, {"arrows": "to", "from": "Smolensk", "label": "capital of", "title": "capital of", "to": "August"}, {"arrows": "to", "from": "August", "label": "capital", "title": "capital", "to": "Smolensk"}, {"arrows": "to", "from": "Smolensk", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Smolensk"}, {"arrows": "to", "from": "Battle of Borodino", "label": "location", "title": "location", "to": "Moscow"}, {"arrows": "to", "from": "Malet coup of 1812", "label": "point in time", "title": "point in time", "to": "1812"}, {"arrows": "to", "from": "Battle of Leipzig", "label": "part of", "title": "part of", "to": "Battle of Dresden"}, {"arrows": "to", "from": "Battle of Leipzig", "label": "part of", "title": "part of", "to": "Napoleonic Wars"}, {"arrows": "to", "from": "Rhineland", "label": "located in or next to body of water", "title": "located in or next to body of water", "to": "Rhine"}, {"arrows": "to", "from": "Prussia", "label": "shares border with", "title": "shares border with", "to": "Austria"}, {"arrows": "to", "from": "Austria", "label": "shares border with", "title": "shares border with", "to": "Prussia"}, {"arrows": "to", "from": "Charles Maurice de Talleyrand-P\u00e9rigord", "label": "employer", "title": "employer", "to": "Napoleon"}, {"arrows": "to", "from": "Elba", "label": "located in or next to body of water", "title": "located in or next to body of water", "to": "Mediterranean Sea"}, {"arrows": "to", "from": "Elba", "label": "location", "title": "location", "to": "Mediterranean Sea"}, {"arrows": "to", "from": "Elba", "label": "located on terrain feature", "title": "located on terrain feature", "to": "Mediterranean Sea"}, {"arrows": "to", "from": "Atlantic Ocean", "label": "part of", "title": "part of", "to": "Atlantic Ocean"}, {"arrows": "to", "from": "Atlantic Ocean", "label": "located in or next to body of water", "title": "located in or next to body of water", "to": "Atlantic Ocean"}, {"arrows": "to", "from": "Atlantic Ocean", "label": "located on terrain feature", "title": "located on terrain feature", "to": "Atlantic Ocean"}, {"arrows": "to", "from": "Grenoble", "label": "shares border with", "title": "shares border with", "to": "Paris"}, {"arrows": "to", "from": "Paris", "label": "shares border with", "title": "shares border with", "to": "Grenoble"}, {"arrows": "to", "from": "Congress of Vienna", "label": "location", "title": "location", "to": "Vienna"}, {"arrows": "to", "from": "Congress of Vienna", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Vienna"}, {"arrows": "to", "from": "Great Britain", "label": "contains administrative territorial entity", "title": "contains administrative territorial entity", "to": "Prussia"}, {"arrows": "to", "from": "Prussia", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Great Britain"}, {"arrows": "to", "from": "Paris", "label": "located in or next to body of water", "title": "located in or next to body of water", "to": "Seine"}, {"arrows": "to", "from": "Seine", "label": "country", "title": "country", "to": "France"}, {"arrows": "to", "from": "United States", "label": "contains administrative territorial entity", "title": "contains administrative territorial entity", "to": "England"}, {"arrows": "to", "from": "England", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "United States"}, {"arrows": "to", "from": "England", "label": "country", "title": "country", "to": "United States"}, {"arrows": "to", "from": "Ascension Island", "label": "located in or next to body of water", "title": "located in or next to body of water", "to": "Atlantic Ocean"}, {"arrows": "to", "from": "HMS Northumberland", "label": "located in or next to body of water", "title": "located in or next to body of water", "to": "Atlantic Ocean"}, {"arrows": "to", "from": "Arsenic poisoning", "label": "has cause", "title": "has cause", "to": "Arsenic"}, {"arrows": "to", "from": "Arsenic poisoning", "label": "has cause", "title": "has cause", "to": "Scheele\u0027s Green"}, {"arrows": "to", "from": "Scheele\u0027s Green", "label": "has effect", "title": "has effect", "to": "Arsenic poisoning"}, {"arrows": "to", "from": "Julius Caesar", "label": "father", "title": "father", "to": "Julius Caesar"}, {"arrows": "to", "from": "Pan-European identity", "label": "country", "title": "country", "to": "Ancien R\u00e9gime"}, {"arrows": "to", "from": "Pan-European identity", "label": "participant", "title": "participant", "to": "Ancien R\u00e9gime"}, {"arrows": "to", "from": "Pan-European identity", "label": "has cause", "title": "has cause", "to": "Ancien R\u00e9gime"}, {"arrows": "to", "from": "Gastrointestinal tract", "label": "connects with", "title": "connects with", "to": "Heart"}, {"arrows": "to", "from": "Death mask", "label": "instance of", "title": "instance of", "to": "Death mask"}, {"arrows": "to", "from": "Gastrointestinal tract", "label": "connects with", "title": "connects with", "to": "Gastrointestinal tract"}, {"arrows": "to", "from": "Seine", "label": "located in the administrative territorial entity", "title": "located in the administrative territorial entity", "to": "Paris"}, {"arrows": "to", "from": "Russia", "label": "different from", "title": "different from", "to": "Russia"}, {"arrows": "to", "from": "Orgeat syrup", "label": "has part", "title": "has part", "to": "Cyanide"}, {"arrows": "to", "from": "Arsenic", "label": "has effect", "title": "has effect", "to": "Arsenic poisoning"}, {"arrows": "to", "from": "Orgeat syrup", "label": "has part", "title": "has part", "to": "Almond"}, {"arrows": "to", "from": "Potassium tartrate", "label": "has part", "title": "has part", "to": "Cyanide"}, {"arrows": "to", "from": "Orgeat syrup", "label": "subclass of", "title": "subclass of", "to": "Syrup"}, {"arrows": "to", "from": "Peptic ulcer disease", "label": "has cause", "title": "has cause", "to": "Arsenic poisoning"}, {"arrows": "to", "from": "Peptic ulcer disease", "label": "subclass of", "title": "subclass of", "to": "Peptic ulcer disease"}, {"arrows": "to", "from": "Stomach", "label": "has effect", "title": "has effect", "to": "Arsenic poisoning"}, {"arrows": "to", "from": "Diocese", "label": "part of", "title": "part of", "to": "Ecclesiastical province"}, {"arrows": "to", "from": "Quum memoranda", "label": "instance of", "title": "instance of", "to": "Bull"}, {"arrows": "to", "from": "Quum memoranda", "label": "publication date", "title": "publication date", "to": "1809"}, {"arrows": "to", "from": "Concordat of 1801", "label": "point in time", "title": "point in time", "to": "1801"}, {"arrows": "to", "from": "Pope", "label": "religion", "title": "religion", "to": "Catholic Church"}, {"arrows": "to", "from": "Catholic Church", "label": "instance of", "title": "instance of", "to": "Catholic Church"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.2,
+            "damping": 0.09,
+            "nodeDistance": 200,
+            "springConstant": 0.05,
+            "springLength": 200
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
