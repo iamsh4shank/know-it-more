@@ -8,6 +8,8 @@ from pangea.services import file_intel
 from pangea.services import redact
 import pycurl
 from io import BytesIO
+import pycurl
+import json
 
 #setting up the environment variables
 domain = os.getenv("PANGEA_DOMAIN")
@@ -39,6 +41,7 @@ def audit_log(message_dict):
         print(f"Request Error: {e.response.summary}")
         for err in e.errors:
             print(f"\t{err.detail} \n")
+    return response
 
 
 def url_checks(url):
@@ -61,6 +64,7 @@ def url_checks(url):
         print(f"Request Error: {e.response.summary}")
         for err in e.errors:
             print(f"\t{err.detail} \n")
+    return response
     
 def redact_check(test_info):
     """_summary_
@@ -78,6 +82,7 @@ def redact_check(test_info):
         print(f"Request Error: {e.response.summary}")
         for err in e.errors:
             print(f"\t{err.detail} \n")
+    return response
 
 def get_ip():
     hostname = socket.gethostname()
@@ -98,6 +103,7 @@ def ip_check():
         print(f"Request Error: {e.response.summary}")
         for err in e.errors:
             print(f"\t{err.detail} \n")
+    return response
         
 def file_check(file_path):
     """_summary_
@@ -118,6 +124,7 @@ def file_check(file_path):
         print(f"Request Error: {e.response.summary}")
         for err in e.errors:
             print(f"\t{err.detail} \n")
+    return response
 
 def check_sts(response, tag = "URL"):
     """_summary_
@@ -134,3 +141,55 @@ def check_sts(response, tag = "URL"):
         print(f"This {tag} is safe")
         sts = True
     return sts
+
+def signin_flow(username, pwd):
+    url = 'https://authn.aws.us.pangea.cloud/v1/flow/verify/password'
+    headers = [
+        'Authorization: Bearer <your_token>',
+        'Content-Type: application/json'
+    ]
+    data = {
+        'flow_id': username,
+        'password': pwd
+    }
+
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, url)
+    c.setopt(pycurl.POST, 1)
+    c.setopt(pycurl.HTTPHEADER, headers)
+    c.setopt(pycurl.POSTFIELDS, json.dumps(data))
+
+    # Suppress the output (useful if you don't want to see the response in the console)
+    c.setopt(pycurl.WRITEFUNCTION, lambda x: None)
+
+    c.perform()
+    c.close()
+    response_body = response_buffer.getvalue()
+    response_json = json.loads(response_body.decode('utf-8'))
+    return response_json
+
+def signup_flow(username, pwd):
+    url = 'https://authn.aws.us.pangea.cloud/v1/flow/signup/password'
+    headers = [
+        'Authorization: Bearer <your_token>',
+        'Content-Type: application/json'
+    ]
+    data = {
+        'flow_id': username,
+        'password': pwd
+    }
+
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, url)
+    c.setopt(pycurl.POST, 1)
+    c.setopt(pycurl.HTTPHEADER, headers)
+    c.setopt(pycurl.POSTFIELDS, json.dumps(data))
+
+    # Suppress the output (useful if you don't want to see the response in the console)
+    c.setopt(pycurl.WRITEFUNCTION, lambda x: None)
+
+    c.perform()
+    c.close()
+    response_body = response_buffer.getvalue()
+    response_json = json.loads(response_body.decode('utf-8'))
+    return response_json

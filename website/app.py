@@ -15,7 +15,35 @@ import scrape_article as sart
 import performing_checks as pc
 
 #llm_pipeline = pipeline("question-answering", model="bert-base-cased")
+import streamlit_authenticator as stauth
+import yaml
+import streamlit as st
+from yaml.loader import SafeLoader
 
+#hashed_passwords = stauth.Hasher(['abc', 'def']).generate()
+with open('config.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
+
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    config['preauthorized']
+)
+
+name, authentication_status, username = authenticator.login('Login', 'main')
+if authentication_status:
+    authenticator.logout('Logout', 'main')
+    response = pc.signin_flow(username, pwd)
+    if username == 'jsmith' and response["status"] == "success": :
+        main()
+    elif username == 'rbriggs' and response["status"] == "success":
+        main()
+elif authentication_status == False:
+    st.error('Username/password is incorrect')
+elif authentication_status == None:
+    st.warning('Please enter your username and password')
 def scrape_text(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -143,6 +171,3 @@ def main():
             st.warning("Please upload a document or enter a URL.")
             log_dict = {'message': 'Something went wrong', 'actor': env.USERNAME, 'action': 'generate', 'target': tag, 'status': 'failure', 'source': 'website'}
             pc.audit_log(log_dict)
-
-if __name__ == "__main__":
-    main()
