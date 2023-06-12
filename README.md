@@ -23,3 +23,6 @@ Here I mainly learned about how to develop software products that solve a real p
 
 ## What's next for Know it more
 Next, I am going to make the LLM more powerful, optimize the KG, and will try to add more resources to extract data based on trusted web platforms for specific fields such as for maybe AI, I will go with websites such as Google Scholar, FB research, Google AI article, and etc.
+
+## Pangea Wrapper
+I am also using Pangea wrapper apis at most of the places to perform checks such as checking the upload file, urls, queries, contexts, and soon going to integrate it with the authentication flow for users.
