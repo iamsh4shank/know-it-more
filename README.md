@@ -1,8 +1,17 @@
 ## Inspiration
-So I was once talking to a person on the train about how GPT4 and chatGPT are revolutionizing several day-to-day tasks such as writing blogs or getting answers for several questions but soon being a security guy he pointed a question whatever chatGPT returns is an uncontrolled knowledge and more like inappropriate out of context answer (sometimes). This hit me hard as it was a true statement, so I started thinking about how I could power this or make it more controlled. Doing a bit of research into this I read about LLMs, PLMs, Question Answering, and entities recognition. Soon I got an idea to make it more controlled based on how we humans learn things. Why not provide it with a set of knowledge which will set up a boundary for it to make the answers prediction? It will make it controlled or basically bind it under certain knowledge. One of the other challenges was as soon as we start learning and moving forward we tend to forget things easily so you can ask questions about the things that you have learned and it will act as an E-Brain and help you to remind stuff.
+So I was once talking to a person on the train about how GPT4 and chatGPT are revolutionizing several day-to-day tasks such as writing blogs or getting answers for several questions but soon being a security guy he pointed a question whatever chatGPT returns is an uncontrolled knowledge and more like inappropriate out of context answer (sometimes). This hit me hard as it was a true statement, so I started thinking about how I could power this or make it more controlled. Doing a bit of research into this I read about LLMs, PLMs, Question Answering, and entities recognition. Soon I got an idea to make it more controlled based on how we humans learn things. Why not provide it with a set of knowledge which will set up a boundary for it to make the answers prediction? It will make it controlled or basically bind it under certain knowledge. One of the other challenges was as soon as we start learning and moving forward we tend to forget things easily so you can ask questions about the things that you have learned and it will act as an E-Brain and help you to remind stuff. I am also using Pangea wrapper APIs at most of the places to perform checks such as checking the upload file, URLs, queries, and contexts, and soon going to integrate it with the authentication flow for users.
  
 ## What it does
 So it is a centralized platform where users like researchers, students, or anyone who wants to perform QA can upload their documents like notes or articles like web URLs or resources by which this platform is going to make a knowledge graph that is going to set the boundary of these answers. Once the knowledge graph is created the user can ask questions providing a context. Further, this question and context will pass through a few steps basically to make the context more driven towards the query for example what if the query is **how to make mango cheesecake** and the context might be about cheesecake, mango, and cakes in general**. So the platform will make the context more driven toward the question. Further, it will query the knowledge graph to extract information and that will help in making the context more driven towards our controlled idea based on the topic. And once all of this is done I used a few other automatic question generation techniques to make more questions out of it which will be further asked to an LLM generating the more meaningful answer. One of the other benefits of this is that users can upload their pdfs or documents and it will automatically generate questions for them as a reference from the document.
+
+## Pangea Wrapper
+I am also using Pangea wrapper apis at most of the places to perform checks such as checking the upload file, urls, queries, contexts, and also integrated it with the authentication flow for users. Some use of APIs are - 
+- Sign up and Sign in -> I used Auth APIs here to create signin and signup flow for the web app which maintains the user signin and signup states easy.
+- File check -> To check if the uploaded file is malicious or not I used file intel apis.
+- URL check -> To check if the URL is malicious or not I used url intel apis
+- Text Check -> To check if the text in the query and context is malicious or not I used the redact apis
+- IP check -> To check if the ip is malicios I used ip intel apis
+
 
 ## How we built it
 There are a few steps that I have done to  make this work - 
@@ -23,6 +32,3 @@ Here I mainly learned about how to develop software products that solve a real p
 
 ## What's next for Know it more
 Next, I am going to make the LLM more powerful, optimize the KG, and will try to add more resources to extract data based on trusted web platforms for specific fields such as for maybe AI, I will go with websites such as Google Scholar, FB research, Google AI article, and etc.
-
-## Pangea Wrapper
-I am also using Pangea wrapper apis at most of the places to perform checks such as checking the upload file, urls, queries, contexts, and soon going to integrate it with the authentication flow for users.
